@@ -1,17 +1,17 @@
 #the mod name as displayed in-game
-displayName: "Java Mod Template"
+displayName: "Spriteless Cringe"
 
 #the internal name of your mod
-name: "example-java-mod"
+name: "spriteless-cringe"
 
 #your name
 author: "You"
 
 #the fully qualified main class of the mod
-main: "example.ExampleJavaMod"
+main: "spriteless.SpritelessCringeMod"
 
 #the mod description as seen in the mod dialog
-description: "A Mindustry Java mod template."
+description: "Cringe with no new sprites"
 
 #the mod version
 version: 1.0
