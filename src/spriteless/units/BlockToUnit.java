@@ -9,7 +9,7 @@ import mindustry.content.*;
 import mindustry.entities.abilities.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.Sounds;
-import mindustry.type.Weapon;
+import mindustry.type.*;
 import mindustry.world.Block;
 import mindustry.world.blocks.Autotiler;
 import mindustry.world.blocks.defense.*;
@@ -204,6 +204,35 @@ public class BlockToUnit {
                     mineItems = Seq.with(Items.beryllium, Items.graphite, Items.tungsten, Items.thorium);
                     mineFloor = false;
                     mineWalls = true;
+                }};
+            else if(block instanceof OverdriveProjector q)
+                new BlockUnitType(block){{
+                    constructor = MechUnitEntity::new;
+                    speed = q.speedBoost;
+                    var effects = new StatusEffect[]{StatusEffects.overdrive, StatusEffects.shielded};
+                    var primes = new int[] {5, 11};
+                    for(int i = 0; i < effects.length; i++)
+                        abilities.add(new StatusFieldAbility(effects[i], 60 * primes[i] + 60, 60 * primes[i], q.range * q.speedBoost / (q.speedBoost + i)));
+                    
+                    
+                    regionLoadRunnable = (Block block) -> {
+                        legRegion = ((OverdriveProjector)block).topRegion;
+                    };
+                }};
+            
+            else if(block instanceof OverdriveProjector q)
+                new BlockUnitType(block){{
+                    constructor = MechUnitEntity::new;
+                    speed = q.speedBoost;
+                    var effects = new StatusEffect[]{StatusEffects.overdrive, StatusEffects.shielded};
+                    var primes = new int[] {5, 11};
+                    for(int i = 0; i < effects.length; i++)
+                        abilities.add(new StatusFieldAbility(effects[i], 60 * primes[i] + 60, 60 * primes[i], q.range * q.speedBoost / (q.speedBoost + i)));
+                    
+                    
+                    regionLoadRunnable = (Block block) -> {
+                        legRegion = ((OverdriveProjector)block).topRegion;
+                    };
                 }};
         }
     }
