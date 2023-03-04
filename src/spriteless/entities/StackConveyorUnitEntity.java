@@ -1,17 +1,19 @@
 package spriteless.entities;
 
-import mindustry.entities.abilities.ForceFieldAbility;
+import mindustry.entities.abilities.*;
 
 public class StackConveyorUnitEntity extends MechUnitEntity {
 
     @Override
     public void update() {
         super.update();
-        var a = abilities[0];
-        if(a instanceof ForceFieldAbility f)
+        for(var a : abilities)
+        if(a instanceof ForceFieldAbility q)
         {
-            f.rotation = rotation + 45;
-            f.regen = 1 - elevation;
+            q.rotation = rotation + 45;
+            q.regen = 1 - elevation;
         }
+        else if(a instanceof RegenAbility q)
+            q.amount = 1 - elevation;
     }
 }

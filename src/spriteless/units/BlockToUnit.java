@@ -15,6 +15,7 @@ import mindustry.world.blocks.Autotiler;
 import mindustry.world.blocks.defense.*;
 import mindustry.world.blocks.distribution.*;
 import mindustry.world.blocks.liquid.*;
+import mindustry.world.blocks.power.*;
 import mindustry.world.blocks.production.*;
 import spriteless.entities.*;
 
@@ -170,6 +171,7 @@ public class BlockToUnit {
                     mineTier = q.tier;
                     mineSpeed = block.size * block.size * 60 / q.drillTime;
                     mineItems = Seq.with(Items.copper, Items.beryllium, Items.lead, Items.tungsten, Items.titanium, Items.thorium);
+                    targetAir = false;
 
                     weapons.add(new Weapon(){{
                         shootX = x = shootY = y = 0;
@@ -184,6 +186,7 @@ public class BlockToUnit {
                             lifetime = 60f;
                             shrinkInterp = Interp.pow2Out;
                             width = height = block.size * 8;
+                            collidesAir = false;
                             shrinkX = shrinkY = 0.5f;
                             splashDamageRadius = width;
                             spin = q.rotateSpeed * block.size;
@@ -209,8 +212,8 @@ public class BlockToUnit {
                 new BlockUnitType(block){{
                     constructor = MechUnitEntity::new;
                     speed = q.speedBoost;
-                    var effects = new StatusEffect[]{StatusEffects.overdrive, StatusEffects.shielded};
-                    var primes = new int[] {5, 11};
+                    var effects = new StatusEffect[]{StatusEffects.overclock, StatusEffects.shielded};
+                    var primes = new float[] {Mathf.E, Mathf.PI};
                     for(int i = 0; i < effects.length; i++)
                         abilities.add(new StatusFieldAbility(effects[i], 60 * primes[i] + 60, 60 * primes[i], q.range * q.speedBoost / (q.speedBoost + i)));
                     
@@ -220,19 +223,37 @@ public class BlockToUnit {
                     };
                 }};
             
-            else if(block instanceof OverdriveProjector q)
+            else if(block instanceof PowerGenerator q)
                 new BlockUnitType(block){{
                     constructor = MechUnitEntity::new;
-                    speed = q.speedBoost;
-                    var effects = new StatusEffect[]{StatusEffects.overdrive, StatusEffects.shielded};
-                    var primes = new int[] {5, 11};
-                    for(int i = 0; i < effects.length; i++)
-                        abilities.add(new StatusFieldAbility(effects[i], 60 * primes[i] + 60, 60 * primes[i], q.range * q.speedBoost / (q.speedBoost + i)));
+                    canBoost = true;
+                    boostMultiplier = 0.5f;
+                    riseSpeed = 1f / 60f;
+                    speed = 1f;
                     
-                    
-                    regionLoadRunnable = (Block block) -> {
-                        legRegion = ((OverdriveProjector)block).topRegion;
-                    };
+                    weapons.add(new Weapon(){{
+                        shootOnDeath = true;
+                        reload = 24f;
+                        shootCone = 180f;
+                        shootSound = Sounds.explosion;
+                        x = shootY = 0f;
+                        mirror = false;
+                        bullet = new BulletType(){{
+                            collidesTiles = false;
+                            collides = false;
+                            hitSound = q.explodeSound;
+        
+                            hitEffect = q.explodeEffect;
+                            speed = 0f;
+                            splashDamageRadius = range = rangeOverride = q.explosionRadius * 8f;
+                            instantDisappear = true;
+                            splashDamage = q.powerProduction * 30 + q.explosionDamage / 2;
+                            killShooter = true;
+                            hittable = false;
+                            collidesAir = true;
+                            makeFire = true;
+                        }};
+                    }});
                 }};
         }
     }
