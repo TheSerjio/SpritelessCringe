@@ -16,6 +16,7 @@ public class WeirdUnitSystem {
 		prov(LeggedUnitEntity.class, LeggedUnitEntity::new),
 		prov(TankUnitEntity.class, TankUnitEntity::new),
 		prov(UnitEntity.class, UnitEntity::new),
+		prov(MimicUnitEntity.class, MimicUnitEntity::new),
 	};
 
 	private static final ObjectIntMap<Class<? extends Entityc>> idMap = new ObjectIntMap<>();

@@ -1,6 +1,5 @@
 package spriteless.blocks;
 
-import mindustry.Vars;
 import mindustry.content.*;
 import mindustry.type.*;
 import mindustry.world.blocks.units.*;
@@ -29,7 +28,7 @@ public class Upgrader extends Reconstructor {
         for(var tree : WeirdUnitSystem.trees)
             if(tree.length > tier)
                 upgrades.add(new UnitType[]{BlockUnitType.map.get(tree[tier - 1], BlockUnitType.map.get(Blocks.scrapWallGigantic)), BlockUnitType.map.get(tree[tier], BlockUnitType.map.get(Blocks.scrapWall))});
-        Utils.transfer(Blocks.multiplicativeReconstructor, this);
+        Utils.transfer(Blocks.primeRefabricator, this);
     }
 
     public class UpgraderBuild extends Reconstructor.ReconstructorBuild{

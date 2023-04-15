@@ -14,6 +14,7 @@ import mindustry.world.Block;
 import mindustry.world.blocks.Autotiler;
 import mindustry.world.blocks.defense.*;
 import mindustry.world.blocks.distribution.*;
+import mindustry.world.blocks.environment.StaticWall;
 import mindustry.world.blocks.liquid.*;
 import mindustry.world.blocks.power.*;
 import mindustry.world.blocks.production.*;
@@ -255,6 +256,15 @@ public class BlockToUnit {
                         }};
                     }});
                 }};
+            else if(block instanceof StaticWall q)
+                new MimicUnitType(block);
+            else if(block.alwaysReplace)
+            {
+                if(block != Blocks.air)// it crashes :(
+                    new MimicUnitType(block);
+            }
+            else if(block.size < 5)
+                arc.util.Log.info("Unconverted block: " + block.name);
         }
     }
 }

@@ -16,9 +16,11 @@ public class SpritelessCringeMod extends Mod{
         Log.info("load content");
         WeirdUnitSystem.setupID();
         spriteless.units.BlockToUnit.init();
-        new Factory();
-        for(int i = 1; i < 4; i++)
+        new UpgradableFactory();
+        new MimicFactory();
+        for(int i = 1; i < 4; i++){
             new Upgrader(i);
+        }
     }
 
     @Override

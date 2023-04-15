@@ -6,17 +6,17 @@ import mindustry.type.*;
 import mindustry.world.blocks.units.*;
 import spriteless.units.*;
 
-public class Factory extends UnitFactory {
+public class UpgradableFactory extends UnitFactory {
 
-    public Factory() {
-        super("factory");
+    public UpgradableFactory() {
+        super("upgradable-factory");
         requirements(Category.units, new ItemStack[]{new ItemStack(Items.silicon, 100)});
         size = 5;
         itemCapacity = 100;
         consumePower(10f);
         for(var unitType : Vars.content.units())
             if(unitType instanceof BlockUnitType but)
-                if(WeirdUnitSystem.parent(but.sourceBlock) == null)
+                if(!(unitType instanceof MimicUnitType) && WeirdUnitSystem.parent(but.sourceBlock) == null)
                     plans.add(new UnitPlan(but, 60, but.sourceBlock.requirements));
     }
 
@@ -27,8 +27,7 @@ public class Factory extends UnitFactory {
             var b = ((BlockUnitType)plan.unit).sourceBlock;
             plan.time = b.buildCost * b.buildCostMultiplier;
         }
-        
-        Utils.transfer(Blocks.primeRefabricator, this);
+        Utils.transfer(Blocks.multiplicativeReconstructor, this);
     }
 
     public class FactoryBuild extends UnitFactory.UnitFactoryBuild{

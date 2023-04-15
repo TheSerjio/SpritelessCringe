@@ -30,14 +30,16 @@ public class BlockUnitType extends UnitType {
     @Override 
     public void load(){
         super.load();
-        arc.Core.app.post(() -> {
-            uiIcon = sourceBlock.uiIcon;
-            fullIcon = sourceBlock.fullIcon;
-            region = previewRegion = shadowRegion = sourceBlock.region;
-            if(regionLoadRunnable != null)
-                regionLoadRunnable.get(sourceBlock);
-            if(health <= 0)
-                health = sourceBlock.health;//fucking automatic health calculation
-        });
+        uiIcon = sourceBlock.uiIcon;
+        fullIcon = sourceBlock.fullIcon;
+        region = previewRegion = shadowRegion = sourceBlock.region;
+        if(regionLoadRunnable != null)
+            regionLoadRunnable.get(sourceBlock);
+        if(baseRegion == arc.Core.atlas.find("error"))
+            baseRegion = arc.Core.atlas.find("window-empty");
+        if(treadRegion == arc.Core.atlas.find("error"))
+           treadRegion = arc.Core.atlas.find("window-empty");
+        if(health <= 0)
+            health = sourceBlock.health;//blocks have automatic health calculation
     }
 }
