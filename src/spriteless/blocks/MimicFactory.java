@@ -10,7 +10,7 @@ public class MimicFactory extends UnitFactory {
 
     public MimicFactory() {
         super("mimic-factory");
-        requirements(Category.units, new ItemStack[]{new ItemStack(Items.silicon, 100)});
+        requirements(Category.units, ItemStack.with(Items.silicon, 100, Items.graphite, 100));
         size = 3;
         itemCapacity = 100;
         consumePower(10f);

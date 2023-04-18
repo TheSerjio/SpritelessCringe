@@ -10,7 +10,7 @@ public class UpgradableFactory extends UnitFactory {
 
     public UpgradableFactory() {
         super("upgradable-factory");
-        requirements(Category.units, new ItemStack[]{new ItemStack(Items.silicon, 100)});
+        requirements(Category.units, ItemStack.with(Items.silicon, 100, Items.graphite, 100));
         size = 5;
         itemCapacity = 100;
         consumePower(10f);
@@ -27,7 +27,7 @@ public class UpgradableFactory extends UnitFactory {
             var b = ((BlockUnitType)plan.unit).sourceBlock;
             plan.time = b.buildCost * b.buildCostMultiplier;
         }
-        Utils.transfer(Blocks.multiplicativeReconstructor, this);
+        Utils.transfer(Blocks.primeRefabricator, this);
     }
 
     public class FactoryBuild extends UnitFactory.UnitFactoryBuild{

@@ -1,6 +1,8 @@
 package spriteless.units;
 
+import mindustry.content.*;
 import mindustry.world.Block;
+import mindustry.world.blocks.environment.*;
 import spriteless.entities.MimicUnitEntity;
 
 public class MimicUnitType extends BlockUnitType {
@@ -14,8 +16,17 @@ public class MimicUnitType extends BlockUnitType {
         speed = 0.5f;
         rotateSpeed = 1f;
         omniMovement = true;
-        crushDamage = 1f;
         drawMinimap = false;
+        engineOffset = 0;
+        if (block instanceof Floor f) {
+            if (block instanceof SteamVent)
+                hitSize = 24;
+            if (f.status != StatusEffects.none)
+                immunities.add(f.status);
+            if (f.liquidDrop != null)
+                canDrown = false;
+        }
+        crushDamage = 64 / hitSize / hitSize;
     }
 
     @Override
