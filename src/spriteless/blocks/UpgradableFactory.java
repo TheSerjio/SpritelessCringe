@@ -16,7 +16,7 @@ public class UpgradableFactory extends UnitFactory {
         consumePower(10f);
         for(var unitType : Vars.content.units())
             if(unitType instanceof BlockUnitType but)
-                if(!(unitType instanceof MimicUnitType) && WeirdUnitSystem.parent(but.sourceBlock) == null)
+                if(!(unitType instanceof MimicUnitType) && !but.sandbox && WeirdUnitSystem.parent(but.sourceBlock) == null)
                     plans.add(new UnitPlan(but, 60, but.cost));
     }
 

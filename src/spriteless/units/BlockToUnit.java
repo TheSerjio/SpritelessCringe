@@ -613,8 +613,10 @@ public class BlockToUnit {
                     constructor = LeggedUnitEntity::new;
                     legCount = q.maxNodes;
                     legLength = q.laserRange * 8;
-                    if(block instanceof LongPowerNode)
+                    if(block instanceof LongPowerNode){
                         legLength = q.laserRange;
+                        cost = ItemStack.with(Items.silicon, 1000, Items.graphite, 1000, Items.thorium, 1000, Items.phaseFabric, 1000, Items.surgeAlloy, 1000);
+                    }
                     
                     legGroupSize = 1;
                     regionLoadRunnable = (PowerNode pn) -> {
@@ -678,6 +680,43 @@ public class BlockToUnit {
                             collidesAir = false;
                         }};
                     }});
+                }};
+            else if(block instanceof MendProjector q)
+                new BlockUnitType(block){{
+                    constructor = MechUnitEntity::new;
+                    speed = 0.75f;
+                    abilities.add(new EnergyFieldAbility(0, q.reload, q.range){{
+                        healPercent = q.healPercent;
+                        hitUnits = false;
+                    }});
+                }};
+            else if(block instanceof PayloadSource)
+                new BlockUnitType(block){{
+                    sandbox = true;
+                    constructor = LeggedUnitEntity::new;
+                    legCount = 4;
+                    legGroupSize = 1;
+                    legLength = 32;
+                    speed = 1f;
+                    rotateSpeed = 3;
+                    abilities.add(new MultiSpawnAbility(new UnitType[0], new float[0], 0, 0));
+                    regionLoadRunnable = (Block b) -> {
+                        var leg = Blocks.payloadConveyor;
+                        baseRegion = legRegion = footRegion = legBaseRegion = leg.fullIcon;
+                        var unitseq = new Seq<UnitType>();
+                        for(var u : Vars.content.units())
+                            if(!u.internal)
+                                unitseq.add(u);
+                        var units = new UnitType[unitseq.size];
+                        var floats = new float[unitseq.size];
+                        for(int i=0;i<unitseq.size;i++){
+                            units[i] = unitseq.get(i);
+                            floats[i] = 60f;
+                        }
+                        var ability = (MultiSpawnAbility)abilities.first();
+                        ability.units = units;
+                        ability.spawnTimes = floats;
+                    };
                 }};
                 
 

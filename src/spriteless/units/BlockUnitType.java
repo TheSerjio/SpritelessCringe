@@ -15,6 +15,8 @@ public class BlockUnitType extends UnitType {
 
     public ItemStack[] cost;
 
+    public boolean sandbox = false;
+
     public BlockUnitType(Block block){
         super(block.name + "-unit");
         sourceBlock = block;

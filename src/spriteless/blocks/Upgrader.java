@@ -26,7 +26,7 @@ import spriteless.units.*;
 
 import static mindustry.Vars.*;
 
-/* Copied and modified from Reconstructor */
+/* Reconstructor & Костыли */
 public class Upgrader extends UnitBlock {
     public Seq<BlockUnitType[]> upgrades = new Seq<>();
     public final Block spriteSample;

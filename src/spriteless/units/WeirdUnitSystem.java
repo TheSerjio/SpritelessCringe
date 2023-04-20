@@ -87,13 +87,12 @@ public class WeirdUnitSystem {
 			new Block[] { Blocks.reinforcedSurgeWall, Blocks.reinforcedSurgeWallLarge },
 			new Block[] { Blocks.scrapWall, Blocks.scrapWallLarge, Blocks.scrapWallHuge, Blocks.scrapWallGigantic },
 			new Block[] { Blocks.thruster, Blocks.scrapWallGigantic },
-
-			//distribution
-			new Block[] { Blocks.conveyor, Blocks.titaniumConveyor, Blocks.armoredConveyor },
+			//distribution //TODO mass driver & cargo points?
+			new Block[] { Blocks.conveyor, Blocks.titaniumConveyor, Blocks.armoredConveyor, Blocks.plastaniumConveyor },
 			new Block[] { Blocks.router, Blocks.distributor},
 			new Block[] { Blocks.itemBridge, Blocks.phaseConveyor},
-			new Block[] { Blocks.duct, Blocks.armoredDuct },
-
+			new Block[] { Blocks.duct, Blocks.armoredDuct, Blocks.surgeConveyor },
+			//
 			new Block[] { Blocks.mender, Blocks.mendProjector },
 			new Block[] { Blocks.overdriveProjector, Blocks.overdriveDome },
 			//liquids
@@ -128,7 +127,7 @@ public class WeirdUnitSystem {
 			new Block[] { Blocks.reinforcedMessage, Blocks.canvas},
 			//energy
 			new Block[] { Blocks.solarPanel, Blocks.largeSolarPanel },
-			new Block[] { Blocks.powerNode, Blocks.powerNodeLarge },
+			new Block[] { Blocks.powerNode, Blocks.powerNodeLarge, Blocks.surgeTower },
 			new Block[] { Blocks.battery, Blocks.batteryLarge },
 			new Block[] { Blocks.beamNode, Blocks.beamTower },
 			new Block[] { Blocks.chemicalCombustionChamber, Blocks.pyrolysisGenerator, Blocks.fluxReactor, Blocks.neoplasiaReactor },
