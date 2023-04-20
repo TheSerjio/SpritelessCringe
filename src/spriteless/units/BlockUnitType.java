@@ -13,9 +13,12 @@ public class BlockUnitType extends UnitType {
 
     public arc.func.Cons<? extends Block> regionLoadRunnable;
 
+    public ItemStack[] cost;
+
     public BlockUnitType(Block block){
         super(block.name + "-unit");
         sourceBlock = block;
+        cost = block.requirements;
         localizedName = "\"" + block.localizedName + "\"";
         hitSize = block.size * 8;
         health = block.health;
@@ -24,6 +27,7 @@ public class BlockUnitType extends UnitType {
         envEnabled = block.envEnabled;
         envDisabled = block.envDisabled;
         engineOffset = hitSize / 2;
+        engineSize = arc.math.Mathf.sqrt(block.size) * 2f;
         squareShape = true;
         map.put(block, this);
     }

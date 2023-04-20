@@ -29,16 +29,15 @@ import static mindustry.Vars.*;
 /* Copied and modified from Reconstructor */
 public class Upgrader extends UnitBlock {
     public Seq<BlockUnitType[]> upgrades = new Seq<>();
+    public final Block spriteSample;
+    public final int speedBoost;
 
-    public Upgrader() {
-        super("upgrader");
-        size = 9;
-        liquidCapacity = 60;
-        itemCapacity = 1;
-        consumeLiquid(Liquids.water, 1f / 60f);
-        consumeLiquid(Liquids.slag, 1f / 60f);
-        requirements(Category.units, ItemStack.with(Items.silicon, 100, Items.graphite, 100));
-        consumePower(1f);
+    public Upgrader(Block sprite, int speed) {
+        super("upgrader-" + sprite.size);
+        spriteSample = sprite;
+        speedBoost = speed;
+        size = sprite.size;
+        liquidCapacity = 1000;
         var no = new ItemStack[0];
         consume(new ConsumeItemDynamic((UpgraderBuild build) -> {
             var r = build.currentRecipe();
@@ -83,16 +82,17 @@ public class Upgrader extends UnitBlock {
     @Override
     public void setStats() {
         super.setStats();
-
+        stats.add(Stat.speedMultiplier, speedBoost);
         stats.add(Stat.output, table -> {
             table.row();
             for (var tree : WeirdUnitSystem.trees) {
                 for (int i = 0; i < tree.length; i++) {
-                    
+
                     var I = i;
-                    if(i != 0)
+                    if (i != 0)
                         table.table(Styles.grayPanel, t -> {
-                            t.image(Icon.right).color(Pal.darkishGray).size(40).pad(10f);
+                            t.image(Icon.right).color(tree[I].size > size ? Pal.health : Pal.darkishGray).size(40)
+                                    .pad(10f);
                         }).fill().padTop(5).padBottom(5);
 
                     table.table(Styles.grayPanel, t -> {
@@ -114,20 +114,26 @@ public class Upgrader extends UnitBlock {
     @Override
     public void init() {
         for (var tree : WeirdUnitSystem.trees)
-            for (var i = 1; i < tree.length; i++)
-                upgrades.add(new BlockUnitType[] {
-                        BlockUnitType.map.get(tree[i - 1], BlockUnitType.map.get(Blocks.scrapWallGigantic)),
-                        BlockUnitType.map.get(tree[i], BlockUnitType.map.get(Blocks.scrapWall)) });
+            for (var i = 1; i < tree.length; i++) {
+                var t0 = BlockUnitType.map.get(tree[i - 1]);
+                if (t0 == null)
+                    continue;
+                var t1 = BlockUnitType.map.get(tree[i]);
+                if (t1 == null)
+                    continue;
+                if (t1.sourceBlock.size > size)
+                    continue;
+                upgrades.add(new BlockUnitType[] { t0, t1 });
+            }
 
         consumeBuilder.each(c -> c.multiplier = b -> state.rules.unitCost(b.team));
-
         super.init();
     }
 
     @Override
     public void load() {
         super.load();
-        Utils.transfer(Blocks.tetrativeReconstructor, this);
+        Utils.transfer(spriteSample, this);
     }
 
     public class UpgraderBuild extends UnitBuild {
@@ -135,6 +141,8 @@ public class Upgrader extends UnitBlock {
         public boolean movingOut;
 
         Block currentRecipe() {
+            if (movingOut)
+                return null;
             var u = unit();
             if (u == null)
                 return null;
@@ -145,7 +153,7 @@ public class Upgrader extends UnitBlock {
             var r = currentRecipe();
             if (r == null)
                 return 0;
-            return progress / r.buildCost;
+            return progress * speedBoost / r.buildCost;
         }
 
         @Override
@@ -278,7 +286,7 @@ public class Upgrader extends UnitBlock {
                         }
 
                         // upgrade the unit
-                        if (progress >= currentRecipe().buildCost) {
+                        if (progress * speedBoost >= currentRecipe().buildCost) {
                             payload.unit = upgrade(payload.unit.type).create(payload.unit.team());
                             if (commandPos != null && payload.unit.isCommandable()) {
                                 payload.unit.command().commandPosition(commandPos);

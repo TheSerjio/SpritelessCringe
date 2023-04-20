@@ -17,7 +17,7 @@ public class UpgradableFactory extends UnitFactory {
         for(var unitType : Vars.content.units())
             if(unitType instanceof BlockUnitType but)
                 if(!(unitType instanceof MimicUnitType) && WeirdUnitSystem.parent(but.sourceBlock) == null)
-                    plans.add(new UnitPlan(but, 60, but.sourceBlock.requirements));
+                    plans.add(new UnitPlan(but, 60, but.cost));
     }
 
     @Override 
@@ -25,7 +25,7 @@ public class UpgradableFactory extends UnitFactory {
         super.load();
         for(var plan : plans){
             var b = ((BlockUnitType)plan.unit).sourceBlock;
-            plan.time = b.buildCost * b.buildCostMultiplier;
+            plan.time = b.buildCost;
         }
         Utils.transfer(Blocks.primeRefabricator, this);
     }

@@ -14,17 +14,17 @@ import mindustry.type.*;
 import mindustry.world.Block;
 import mindustry.world.blocks.*;
 import mindustry.world.blocks.defense.*;
+import mindustry.world.blocks.defense.turrets.Turret;
 import mindustry.world.blocks.distribution.*;
 import mindustry.world.blocks.environment.*;
 import mindustry.world.blocks.heat.HeatProducer;
 import mindustry.world.blocks.liquid.*;
-import mindustry.world.blocks.logic.LogicBlock;
-import mindustry.world.blocks.payloads.PayloadConveyor;
+import mindustry.world.blocks.payloads.*;
 import mindustry.world.blocks.power.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.blocks.storage.*;
 import mindustry.world.blocks.units.*;
-import spriteless.MultiSpawnAbility;
+import spriteless.abilities.*;
 import spriteless.entities.*;
 
 public class BlockToUnit {
@@ -106,7 +106,7 @@ public class BlockToUnit {
                         armor = sc.health;
                     };
                 }};
-            else if(block instanceof Wall q && block != Blocks.thruster)
+            else if(block instanceof Wall q)
                 new BlockUnitType(block){{
                     constructor = TankUnitEntity::new;
                     omniMovement = false;
@@ -118,7 +118,21 @@ public class BlockToUnit {
                         maxTargets = 100;
                         healPercent = 1;
                         targetAir = false;
-                        color = Items.blastCompound.color;
+                        var item = Items.blastCompound;
+                        for(var i : Vars.content.items())
+                            if(q.name.contains(i.name))
+                                item = i;
+                        if(q.name.contains("phase") || q == Blocks.shieldedWall)
+                            item = Items.phaseFabric;
+                        if(q.name.contains("surge"))
+                            item = Items.surgeAlloy;
+                        if(q.name.contains("door"))
+                            item = Items.silicon;
+                        if(q == Blocks.thruster){
+                            maxTargets = 10;
+                            item = Items.silicon;
+                        }
+                        color = item.color;
                     }});
                 }};
             else if(block instanceof LiquidRouter q)
@@ -144,7 +158,7 @@ public class BlockToUnit {
         
                         bullet = new LiquidBulletType(Liquids.neoplasm){{
                             damage = 1;
-                            speed = 3f;
+                            speed = 5f;
                             drag = 0.1f;
                             shootEffect = Fx.shootSmall;
                             lifetime = 60f;
@@ -153,13 +167,14 @@ public class BlockToUnit {
                     }});
                 }};
             
-            else if(block instanceof Autotiler q)
+            //TODO split
+            else if(block instanceof Autotiler || block instanceof PayloadConveyor || block instanceof DirectionBridge || block instanceof ItemBridge || block instanceof OverflowDuct || block instanceof OverflowGate || block instanceof Sorter || block instanceof Junction || block instanceof LiquidJunction || block instanceof StackRouter || block instanceof DuctRouter || block instanceof DirectionalUnloader || block instanceof Unloader)
                 new BlockUnitType(block){{
                     constructor = LeggedUnitEntity::new;
                     speed = 1f;
                     legCount = 4;
                     legGroupSize = 1;
-                    legLength = 8;
+                    legLength = block.size * 12;
 
                     regionLoadRunnable = (Block block) -> {
                         this.region = previewRegion = shadowRegion = baseRegion = legRegion = footRegion = legBaseRegion = block.fullIcon;
@@ -173,7 +188,6 @@ public class BlockToUnit {
                     constructor = UnitEntity::new;
                     flying = true;
                     speed = 1f;
-                    drag = 0.01f;
                     defaultCommand = UnitCommand.mineCommand;
                     mineTier = q.tier;
                     mineSpeed = block.size * block.size * 60 / q.drillTime;
@@ -232,6 +246,15 @@ public class BlockToUnit {
                     };
                 }};
             
+            else if(block instanceof BeamNode || block instanceof ShockMine || block instanceof Battery || block instanceof SolarGenerator)
+                new BlockUnitType(block){{
+                    constructor = UnitEntity::new;
+                    speed = 0.5f;
+                    flying = true;
+                    rotateSpeed = 10f;
+                    abilities.add(new BlockPlacerAbility(block, 300));
+                }};
+
             else if(block instanceof PowerGenerator q)
                 new BlockUnitType(block){{
                     constructor = MechUnitEntity::new;
@@ -267,7 +290,7 @@ public class BlockToUnit {
 
             else if(block instanceof Prop || block instanceof Floor || block instanceof TallBlock || block instanceof TreeBlock)
             {
-                if(block == Blocks.air)// it crashes :(
+                if(block == Blocks.air)
                     continue;
                 new MimicUnitType(block);
             }
@@ -323,7 +346,7 @@ public class BlockToUnit {
                         constructor = LeggedUnitEntity::new;
                         legCount = 4;
                         legGroupSize = 1;
-                        legLength = 24;
+                        legLength = 32;
                     }
                     speed = 0.25f;
                     rotateSpeed = 6;
@@ -336,9 +359,9 @@ public class BlockToUnit {
                         i++;
                     }
                     abilities.add(new MultiSpawnAbility(units, times, 0, 0));
-                    regionLoadRunnable = (UnitFactory q) -> {
+                    regionLoadRunnable = (Block b) -> {
                         var leg = Blocks.reinforcedPayloadConveyor;
-                        if(q == Blocks.groundFactory || q == Blocks.airFactory)
+                        if(b == Blocks.groundFactory || b == Blocks.airFactory)
                             leg = Blocks.payloadConveyor;
                         baseRegion = legRegion = footRegion = legBaseRegion = leg.fullIcon;
                     };
@@ -348,7 +371,7 @@ public class BlockToUnit {
                     constructor = LeggedUnitEntity::new;
                     legCount = 4;
                     legGroupSize = 1;
-                    legLength = 24;
+                    legLength = q.size * 8;
                     speed = 0.25f;
                     rotateSpeed = 6;
                     var units = new UnitType[q.upgrades.size];
@@ -360,10 +383,32 @@ public class BlockToUnit {
                         i++;
                     }
                     abilities.add(new MultiSpawnAbility(units, times, 0, 0));
-                    regionLoadRunnable = (Reconstructor q) -> {
+                    regionLoadRunnable = (Block b) -> {
                         var leg = Blocks.reinforcedPayloadConveyor;
-                        if(q.name.contains("reconstructor"))
+                        if(b.name.contains("reconstructor"))
                             leg = Blocks.payloadConveyor;
+                        baseRegion = legRegion = footRegion = legBaseRegion = leg.fullIcon;
+                    };
+                }};
+            else if(block instanceof UnitAssembler q)
+                new BlockUnitType(block){{
+                    constructor = LeggedUnitEntity::new;
+                    legCount = 6;
+                    legGroupSize = 1;
+                    legLength = 32;
+                    speed = 0.125f;
+                    rotateSpeed = 12;
+                    var units = new UnitType[q.plans.size];
+                    var times = new float[q.plans.size];
+                    int i = 0;
+                    for (var plan : q.plans) {
+                        units[i] = plan.unit;
+                        times[i] = plan.time;
+                        i++;
+                    }
+                    abilities.add(new MultiSpawnAbility(units, times, 0, 0));
+                    regionLoadRunnable = (Block b) -> {
+                        var leg = Blocks.reinforcedPayloadConveyor;
                         baseRegion = legRegion = footRegion = legBaseRegion = leg.fullIcon;
                     };
                 }};
@@ -470,20 +515,21 @@ public class BlockToUnit {
                         };
                         constructor = TankUnitEntity::new;
                     }
-                    weapons.add(new Weapon(){{// it was "sei" launcher :)
+                    weapons.add(new Weapon(){{
 
                         x = 0f;
-                        y = 0f;
+                        y = -block.size;
                         mirror = false;
                 
-                        shootY = block.size * 4;
+                        shootY = 0;
                         reload = 60f;
                         velocityRnd = 0.4f;
                         inaccuracy = block.size;
                         ejectEffect = Fx.none;
                         shootSound = Sounds.missile;
                         shoot.shots = block.size;
-                        inaccuracy = 15;
+                        inaccuracy = block.size;
+                        shootCone = 180;
         
                         bullet = new MissileBulletType(2f, 100){{
                             homingPower = 0f;
@@ -491,7 +537,7 @@ public class BlockToUnit {
                             height = 8f;
                             shrinkX = shrinkY = 0f;
                             drag = -0.003f;
-                            keepVelocity = false;
+                            keepVelocity = true;
                             splashDamageRadius = 32f;
                             splashDamage = 50f;
                             lifetime = 60f * block.size;
@@ -505,6 +551,135 @@ public class BlockToUnit {
                         }};
                     }});
                 }};
+            else if(block instanceof Router q)
+            {
+                new BlockUnitType(block){{
+                    constructor = LeggedUnitEntity::new;
+                    legCount = 4;
+                    legGroupSize = 1;
+                    legLength = block.size * 12;
+                    speed = 2;
+                    rotateSpeed = 6;
+                    regionLoadRunnable = (Router r) -> {
+                        baseRegion = legRegion = legBaseRegion = footRegion = r.region;
+                        if(r == Blocks.router)
+                            legRegion = legBaseRegion = ((Conveyor)Blocks.conveyor).regions[0][0];
+                        ((EnergyFieldAbility)abilities.get(0)).damage = r.health;
+                    };
+                    abilities.add(new EnergyFieldAbility(100, 60, 80){{
+                        healPercent = 0;
+                        maxTargets = 4;
+                        color = Pal.health;
+                    }});
+                    if(q.size == 1)
+                        abilities.add(new RouterHellAbility(block));
+                }};
+            }
+            else if(block instanceof Constructor q)
+                new BlockUnitType(block){{
+                    constructor = LeggedUnitEntity::new;
+                    legCount = 4;
+                    legGroupSize = 1;
+                    legLength = block.size * 16;
+                    speed = 0.25f;
+                    rotateSpeed = 6;
+                    var possibles = new UnitType[]{ this };
+                    if(block == Blocks.constructor){
+                        possibles = new UnitType[q.filter.size];
+                        for(int i = 0; i < possibles.length; i++)
+                            possibles[i] = BlockUnitType.map.get(q.filter.get(i));
+                    }
+                    else if(block == Blocks.largeConstructor)
+                        possibles = new UnitType[]{ BlockUnitType.map.get(Blocks.beamTower), BlockUnitType.map.get(Blocks.reinforcedLiquidTank), BlockUnitType.map.get(Blocks.constructor)};
+                    var times = new float[possibles.length];
+                    for(int i = 0; i < possibles.length; i++)
+                        times[i] = ((BlockUnitType)possibles[i]).sourceBlock.buildCost;
+                    abilities.add(new MultiSpawnAbility(possibles, times, 0, 0));
+                    regionLoadRunnable = (Block b) -> {
+                        var leg = Blocks.reinforcedPayloadConveyor;
+                        baseRegion = legRegion = footRegion = legBaseRegion = leg.fullIcon;
+                    };
+                }};
+            else if(block instanceof Turret q)//TODO damn
+                new BlockUnitType(block){{
+                    constructor = MechUnitEntity::new;
+                    speed = 0.125f;
+                    regionLoadRunnable = (Turret q) -> {
+                        baseRegion = q.region;
+                    };
+                }};
+            else if(block instanceof PowerNode q)
+                new BlockUnitType(block){{
+                    constructor = LeggedUnitEntity::new;
+                    legCount = q.maxNodes;
+                    legLength = q.laserRange * 8;
+                    if(block instanceof LongPowerNode)
+                        legLength = q.laserRange;
+                    
+                    legGroupSize = 1;
+                    regionLoadRunnable = (PowerNode pn) -> {
+                        baseRegion = jointRegion = footRegion = pn.laserEnd;
+                        legRegion = legBaseRegion = pn.laser;
+                        if(pn instanceof LongPowerNode lpn)
+                            cellRegion = lpn.glow;
+                    };
+                    weapons.add(new Weapon(){{
+                        mirror = false;
+                        x = y = shootX = shootY = 0;
+                        reload = 30 / q.maxNodes;
+                        inaccuracy = 270;
+                        var color = q.laserColor2;
+                        bullet = new BasicBulletType(1f, legLength, "missile"){{            
+                            lifetime = legLength;
+                            width = 12f;
+                            height = 22f;
+            
+                            hitSize = 7f;
+                            ammoMultiplier = 1;
+                            hitColor = backColor = trailColor = lightningColor = color;
+                            frontColor = Color.white;
+                            trailWidth = 3f;
+                            trailLength = (int)q.laserRange;
+                            hitEffect = despawnEffect = Fx.hitBulletColor;
+            
+                            homingPower = 5f / lifetime;
+                        }};
+                    }});
+                }};
+                
+            else if(block instanceof Pump q)
+                new BlockUnitType(block){{
+                    constructor = TankUnitEntity::new;
+                    speed = 1f / block.size;
+                    abilities.add(new LiquidExplodeAbility(){{
+                        liquid = Liquids.slag;
+                        amount = q.liquidCapacity;
+                    }});
+                    immunities.add(StatusEffects.melting);
+                    immunities.add(StatusEffects.burning);
+                    weapons.add(new Weapon(){{
+                        top = false;
+                        rotate = false;
+                        shootCone = 90;
+                        shootX = x = shootY = 0;
+                        y = hitSize / 2;
+                        reload = 5f / q.pumpAmount / q.size / q.size;
+                        inaccuracy = 10f;
+                        ejectEffect = Fx.none;
+                        recoil = 0f;
+                        shootSound = Sounds.flame;
+        
+                        bullet = new LiquidBulletType(Liquids.slag){{
+                            damage = 1;
+                            speed = 5f;
+                            drag = 0.1f;
+                            shootEffect = Fx.shootSmall;
+                            lifetime = 60f;
+                            collidesAir = false;
+                        }};
+                    }});
+                }};
+                
 
             else arc.util.Log.info("Unconverted block: " + block.name);
         }

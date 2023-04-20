@@ -16,7 +16,7 @@ public class MimicFactory extends UnitFactory {
         consumePower(10f);
         for(var unitType : Vars.content.units())
             if(unitType instanceof MimicUnitType mut)
-                plans.add(new UnitPlan(mut, 60, ItemStack.with(Items.silicon, 100, Items.graphite, 100)){{time = 360;}});
+                plans.add(new UnitPlan(mut, 60, mut.cost){{time = 360;}});
     }
 
     @Override 

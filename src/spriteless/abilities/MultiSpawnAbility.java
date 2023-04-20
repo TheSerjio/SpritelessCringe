@@ -1,4 +1,4 @@
-package spriteless;
+package spriteless.abilities;
 
 import arc.Core;
 import arc.Events;
@@ -38,17 +38,18 @@ public class MultiSpawnAbility extends Ability {
     public void update(Unit unit){
         timer += Time.delta * state.rules.unitBuildSpeed(unit.team);
 
-        if(timer >= spawnTimes[index] && Units.canCreate(unit.team, this.units[index])){
-            float x = unit.x + Angles.trnsx(unit.rotation, spawnY, spawnX), y = unit.y + Angles.trnsy(unit.rotation, spawnY, spawnX);
-            spawnEffect.at(x, y, 0f, parentizeEffects ? unit : null);
-            Unit u = this.units[index].create(unit.team);
-            u.set(x, y);
-            u.rotation = unit.rotation;
-            Events.fire(new UnitCreateEvent(u, null, unit));
-            if(!net.client()){
-                u.add();
+        if(timer >= spawnTimes[index]){
+            if(Units.canCreate(unit.team, this.units[index])){
+                float x = unit.x + Angles.trnsx(unit.rotation, spawnY, spawnX), y = unit.y + Angles.trnsy(unit.rotation, spawnY, spawnX);
+                spawnEffect.at(x, y, 0f, parentizeEffects ? unit : null);
+                Unit u = this.units[index].create(unit.team);
+                u.set(x, y);
+                u.rotation = unit.rotation;
+                Events.fire(new UnitCreateEvent(u, null, unit));
+                if(!net.client()){
+                    u.add();
+                }
             }
-
             timer = 0f;
             index = (index + 1) % units.length;
         }

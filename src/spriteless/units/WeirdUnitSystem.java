@@ -16,7 +16,6 @@ public class WeirdUnitSystem {
 			prov(LeggedUnitEntity.class, LeggedUnitEntity::new),
 			prov(TankUnitEntity.class, TankUnitEntity::new),
 			prov(UnitEntity.class, UnitEntity::new),
-			prov(MimicUnitEntity.class, MimicUnitEntity::new),
 			prov(NavalUnitEntity.class, NavalUnitEntity::new),
 	};
 
@@ -84,16 +83,21 @@ public class WeirdUnitSystem {
 			new Block[] { Blocks.berylliumWall, Blocks.berylliumWallLarge },
 			new Block[] { Blocks.tungstenWall, Blocks.tungstenWallLarge },
 			new Block[] { Blocks.carbideWall, Blocks.carbideWallLarge },
-			new Block[] { Blocks.duct, Blocks.armoredDuct },
-			new Block[] { Blocks.conveyor, Blocks.titaniumConveyor, Blocks.armoredConveyor },
-			new Block[] { Blocks.conduit, Blocks.pulseConduit, Blocks.platedConduit },
 			new Block[] { Blocks.door, Blocks.doorLarge },
 			new Block[] { Blocks.reinforcedSurgeWall, Blocks.reinforcedSurgeWallLarge },
 			new Block[] { Blocks.scrapWall, Blocks.scrapWallLarge, Blocks.scrapWallHuge, Blocks.scrapWallGigantic },
+			new Block[] { Blocks.thruster, Blocks.scrapWallGigantic },
+
+			//distribution
+			new Block[] { Blocks.conveyor, Blocks.titaniumConveyor, Blocks.armoredConveyor },
+			new Block[] { Blocks.router, Blocks.distributor},
+			new Block[] { Blocks.itemBridge, Blocks.phaseConveyor},
+			new Block[] { Blocks.duct, Blocks.armoredDuct },
 
 			new Block[] { Blocks.mender, Blocks.mendProjector },
 			new Block[] { Blocks.overdriveProjector, Blocks.overdriveDome },
-
+			//liquids
+			new Block[] { Blocks.conduit, Blocks.pulseConduit, Blocks.platedConduit },
 			new Block[] { Blocks.liquidRouter, Blocks.liquidContainer, Blocks.liquidTank },
 			new Block[] { Blocks.reinforcedLiquidRouter, Blocks.reinforcedLiquidContainer, Blocks.reinforcedLiquidTank },
 			//drills
@@ -108,6 +112,7 @@ public class WeirdUnitSystem {
 			new Block[] { Blocks.tankFabricator, Blocks.tankRefabricator, Blocks.tankAssembler },
 			new Block[] { Blocks.mechFabricator, Blocks.mechRefabricator, Blocks.shipAssembler },
 			new Block[] { Blocks.shipFabricator, Blocks.shipRefabricator, Blocks.mechAssembler },
+			new Block[] { Blocks.constructor, Blocks.largeConstructor},
 			//production
 			new Block[] { Blocks.graphitePress, Blocks.multiPress },
 			new Block[] { Blocks.siliconSmelter, Blocks.siliconCrucible },
@@ -120,12 +125,13 @@ public class WeirdUnitSystem {
 			new Block[] { Blocks.logicDisplay, Blocks.largeLogicDisplay },
 			new Block[] { Blocks.microProcessor, Blocks.logicProcessor, Blocks.hyperProcessor },
 			new Block[] { Blocks.switchBlock, Blocks.memoryCell, Blocks.memoryBank },
+			new Block[] { Blocks.reinforcedMessage, Blocks.canvas},
 			//energy
 			new Block[] { Blocks.solarPanel, Blocks.largeSolarPanel },
 			new Block[] { Blocks.powerNode, Blocks.powerNodeLarge },
 			new Block[] { Blocks.battery, Blocks.batteryLarge },
 			new Block[] { Blocks.beamNode, Blocks.beamTower },
-			new Block[] { Blocks.chemicalCombustionChamber, Blocks.pyrolysisGenerator },
+			new Block[] { Blocks.chemicalCombustionChamber, Blocks.pyrolysisGenerator, Blocks.fluxReactor, Blocks.neoplasiaReactor },
 			new Block[] { Blocks.combustionGenerator, Blocks.steamGenerator, Blocks.differentialGenerator, Blocks.impactReactor },
 	};
 }
