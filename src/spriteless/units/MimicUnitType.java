@@ -7,12 +7,10 @@ import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.world.Block;
 import mindustry.world.blocks.environment.*;
+import spriteless.abilities.MimicAbility;
 import spriteless.entities.TankUnitEntity;
-import mindustry.entities.bullet.*;
 
 public class MimicUnitType extends BlockUnitType {
-
-    private static final Vec2 tmp = new Vec2();
 
     public MimicUnitType(Block block) {
         super(block);
@@ -23,6 +21,7 @@ public class MimicUnitType extends BlockUnitType {
         omniMovement = true;
         drawMinimap = false;
         faceTarget = false;
+        drag = 0.05f;
         if (block instanceof TreeBlock){
             hitSize = 64;
             health = 1000;
@@ -48,28 +47,10 @@ public class MimicUnitType extends BlockUnitType {
             if (f.liquidDrop != null)
                 canDrown = false;
         }
-        final var aS = attackStatus;
-        weapons.add(new Weapon(){{
-            reload = 5f;
-            inaccuracy = 180;
-            shootCone = 360;
-            x = y = shootX = shootY = 0;
-            mirror = false;
-            bullet = new LightningBulletType(){{
-                lightningColor = hitColor = block.mapColor.cpy();
-                damage = reload;
-                lightningLength = 4;
-                lightningLengthRand = 4;
-
-                lightningType = new BulletType(0.0001f, damage){{
-                    lifetime = Fx.lightning.lifetime;
-                    hitEffect = Fx.hitLancer;
-                    despawnEffect = Fx.none;
-                    hittable = false;
-                    status = aS;
-                    statusDuration = 30f;
-                }};
-            }};
+        var aS = attackStatus;// java moment
+        abilities.add(new MimicAbility(){{
+            status = aS;
+            color = block.mapColor;
         }});
     }
 
@@ -79,21 +60,9 @@ public class MimicUnitType extends BlockUnitType {
         cellRegion = arc.Core.atlas.find("window-empty");
     }
 
+    // thanks Anuke for this
     @Override
     public boolean targetable(Unit unit, Team targeter) {
         return targeter == unit.team || unit.isShooting || !unit.vel.isZero();
-    }
-
-    @Override
-    public void update(Unit unit) {
-        super.update(unit);
-        unit.lookAt(90);
-        if(unit.isShooting || !unit.vel.isZero())
-            return;
-        var tile = unit.tileOn();
-        var x = tile.worldx();
-        var y = tile.worldy();
-        tmp.set(x, y).sub(unit.x, unit.y).scl(0.125f);
-        unit.vel.add(tmp);
     }
 }
