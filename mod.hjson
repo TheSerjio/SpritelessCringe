@@ -5,7 +5,7 @@ displayName: "Spriteless Cringe"
 name: "spriteless-cringe"
 
 #your name
-author: "You"
+author: "The Serjio#3162"
 
 #the fully qualified main class of the mod
 main: "spriteless.SpritelessCringeMod"
@@ -14,10 +14,10 @@ main: "spriteless.SpritelessCringeMod"
 description: "Cringe with no new sprites"
 
 #the mod version
-version: 1.0
+version: 0.1
 
 #the minimum game build required to run this mod
-minGameVersion: 140
+minGameVersion: 143
 
 #this is a java mod
 java: true
