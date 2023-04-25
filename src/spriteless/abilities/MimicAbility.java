@@ -1,6 +1,5 @@
 package spriteless.abilities;
 
-import arc.math.geom.Vec2;
 import mindustry.entities.abilities.EnergyFieldAbility;
 import mindustry.gen.Unit;
 

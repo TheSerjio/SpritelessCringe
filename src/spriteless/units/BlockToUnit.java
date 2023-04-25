@@ -600,14 +600,14 @@ public class BlockToUnit {
                         baseRegion = legRegion = footRegion = legBaseRegion = leg.fullIcon;
                     };
                 }};
-            else if(block instanceof Turret q)//TODO damn
+            /*else if(block instanceof Turret q)//TODO damn
                 new BlockUnitType(block){{
                     constructor = MechUnitEntity::new;
                     speed = 0.125f;
                     regionLoadRunnable = (Turret q) -> {
                         baseRegion = q.region;
                     };
-                }};
+                }};*/
             else if(block instanceof PowerNode q)
                 new BlockUnitType(block){{
                     constructor = LeggedUnitEntity::new;

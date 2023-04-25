@@ -133,7 +133,7 @@ public class Upgrader extends UnitBlock {
     @Override
     public void load() {
         super.load();
-        Utils.transfer(spriteSample, this);
+        Utils.transferPayload(spriteSample, this);
     }
 
     public class UpgraderBuild extends UnitBuild {
@@ -342,11 +342,6 @@ public class Upgrader extends UnitBlock {
         }
 
         @Override
-        public byte version() {
-            return 2;
-        }
-
-        @Override
         public void write(Writes write) {
             super.write(write);
 
@@ -359,13 +354,8 @@ public class Upgrader extends UnitBlock {
         public void read(Reads read, byte revision) {
             super.read(read, revision);
 
-            if (revision >= 1) {
-                progress = read.f();
-            }
-
-            if (revision >= 2) {
-                commandPos = TypeIO.readVecNullable(read);
-            }
+            progress = read.f();
+            commandPos = TypeIO.readVecNullable(read);
             movingOut = read.bool();
         }
 

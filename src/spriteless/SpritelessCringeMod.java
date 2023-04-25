@@ -39,6 +39,8 @@ public class SpritelessCringeMod extends Mod{
             requirements(Category.units, ItemStack.with(Items.silicon, 1000, Items.graphite, 1000, Items.thorium, 500, Items.surgeAlloy, 100, Items.phaseFabric, 100));
             consumePower(100f);
         }};
+        for(int i = 1; i < 5; i++)
+            new DamageTestingWall("dps-wall-" + i, i);
     }
 
     @Override

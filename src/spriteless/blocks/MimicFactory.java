@@ -22,7 +22,7 @@ public class MimicFactory extends UnitFactory {
     @Override 
     public void load(){
         super.load();
-        Utils.transfer(Blocks.additiveReconstructor, this);
+        Utils.transferPayload(Blocks.additiveReconstructor, this);
     }
 
     public class FactoryBuild extends UnitFactory.UnitFactoryBuild{

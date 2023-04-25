@@ -27,7 +27,7 @@ public class UpgradableFactory extends UnitFactory {
             var b = ((BlockUnitType)plan.unit).sourceBlock;
             plan.time = b.buildCost;
         }
-        Utils.transfer(Blocks.primeRefabricator, this);
+        Utils.transferPayload(Blocks.primeRefabricator, this);
     }
 
     public class FactoryBuild extends UnitFactory.UnitFactoryBuild{
