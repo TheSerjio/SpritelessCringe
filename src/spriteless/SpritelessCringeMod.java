@@ -16,7 +16,8 @@ public class SpritelessCringeMod extends Mod{
 
     @Override
     public void loadContent(){
-        Log.info("load content");
+        Blocks.beamLink.requirements(Category.power, mindustry.world.meta.BuildVisibility.editorOnly, ItemStack.with(Items.silicon, 1000, Items.graphite, 1000, Items.thorium, 1000, Items.surgeAlloy, 1000, Items.phaseFabric, 1000));
+
         WeirdUnitSystem.setupID();
         spriteless.units.BlockToUnit.init();
         new MimicFactory();
@@ -41,6 +42,7 @@ public class SpritelessCringeMod extends Mod{
         }};
         for(int i = 1; i < 5; i++)
             new DamageTestingWall("dps-wall-" + i, i);
+        new Tetherer();
     }
 
     @Override
